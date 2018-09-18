@@ -2,8 +2,7 @@
 # Tested with pbs_version 14.2.2.20170505010934 and PBSPro_13.1.2.163512
 import os
 import json
-from sys import path, argv                                                                                                                               
-         
+from sys import path, argv
 from datetime import datetime, timedelta
 import re
 from ClusterShell.Task import task_self, NodeSet
@@ -49,15 +48,15 @@ def get_jobs(n):
                 data['nodes'][n]['jobs']
         except:
                 return "---"
-        data = json.loads(jsondata)                                                                                                       
-        jobs = data['nodes'][n]['jobs']                                                                                                
-        jobs = " ".join(jobs)                                                                            
-        return jobs                              
+        data = json.loads(jsondata)
+        jobs = data['nodes'][n]['jobs']
+        jobs = " ".join(jobs)
+        return jobs
         
 def get_times(jobs):
         global rtime
         global etime
-        global unk      
+        global unk
         if "---" not in jobs:
                 jobdata = os.popen("clush -Nw chadmin1 qstat -i {0}".format(jobs)).readlines()[5]       #PBS admin node
                 etime = jobdata.split()[10]
@@ -65,18 +64,14 @@ def get_times(jobs):
         else:
                 etime = "drained"
                 rtime = "drained"
-        if "--" in rtime or "--" in etime:                                                                                                               
-                                                                          
-                unk = "unknown"                                                                                                                          
-                                                                             
-                return                           
+        if "--" in rtime or "--" in etime:
+                unk = "unknown"
+                return
 
 def get_dtime(etime, rtime):
-        if "---" not in jobs and "--" in rtime or "--" in etime:                                                                                         
-                       
-                tdelta = "unknown"                                                                                                                       
-                                                                                
-                return tdelta                     
+        if "---" not in jobs and "--" in rtime or "--" in etime:
+                tdelta = "unknown"
+                return tdelta
         if "---" not in jobs and "drained" not in etime and "drained" not in rtime:
                 fmt = '%H:%M'
                 tdelta = datetime.strptime(rtime, fmt) - datetime.strptime(etime, fmt)
